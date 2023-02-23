@@ -68,9 +68,11 @@ while count < STATES:
     screen.update()
     time.sleep(0.1)
     # Creates the textbook to receive user input
-    user_state = screen.textinput(title=f"{count} out of 50", prompt="Enter another state:")
+    user_state = screen.textinput(title=f"{count} out of 50", prompt="Enter 'exit' to quit...\nEnter another state:")
     # Guarantees a capitalized state to compare to dataframe
     user_state = user_state.capitalize()
+    if user_state == "Exit":
+        break
     # Boolean to validate guess
     test_state = False
     # Checks each state to see if a guess is an actual state
@@ -116,4 +118,16 @@ while count < STATES:
             # Increments the successfully guessed state count
             count += 1
 
-screen.exitonclick()
+# We collect the data on which states the user has failed to guess
+missing_states = []
+# We loop through the full states list, and if the state does not exist in the
+# user guest list, then we add that state to the missing state array
+for state in data.state:
+    if state not in guessed_states:
+        missing_states.append(state)
+# We then convert the array to a pandas DataFrame
+missing_states_data = pandas.DataFrame(missing_states)
+# Then we convert the DataFrame into a CSV so that the user can easily see which states need to be learned
+# See the CSV file for example
+missing_states_data.to_csv("states_to_learn.csv")
+
